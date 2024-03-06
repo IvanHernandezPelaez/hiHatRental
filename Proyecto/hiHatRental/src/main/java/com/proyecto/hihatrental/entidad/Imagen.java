@@ -41,7 +41,7 @@ public class Imagen {
         return "Imagen{" +
                 "id=" + id +
                 ", url='" + url + '\'' +
-                ", producto=" + producto +
+                //", producto=" + producto +
                 '}';
     }
 }

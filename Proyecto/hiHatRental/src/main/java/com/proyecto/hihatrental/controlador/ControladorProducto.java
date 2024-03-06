@@ -1,5 +1,6 @@
 package com.proyecto.hihatrental.controlador;
 
+import com.proyecto.hihatrental.dto.RespuestaProductoDTO;
 import com.proyecto.hihatrental.entidad.Producto;
 import com.proyecto.hihatrental.servicio.ServicioProducto;
 import org.springframework.http.ResponseEntity;
@@ -26,17 +27,17 @@ public class ControladorProducto {
     }
 
     @PostMapping("/registrar-producto")
-    public ResponseEntity<Producto> registrarProducto(@RequestBody Producto producto){
+    public ResponseEntity<RespuestaProductoDTO> registrarProducto(@RequestBody Producto producto){
         return ResponseEntity.ok(servicioProducto.registrarProducto(producto));
     }
 
     @GetMapping("/ver-productos")
-    public ResponseEntity<List<Producto>> buscarProducto(){
+    public ResponseEntity<List<RespuestaProductoDTO>> buscarProducto(){
         return ResponseEntity.ok().body(servicioProducto.buscarProductos());
     }
 
     @GetMapping("/{id-producto}")
-    public ResponseEntity<Producto> buscarProductoPorId(@PathVariable("id-producto") long id){
+    public ResponseEntity<RespuestaProductoDTO> buscarProductoPorId(@PathVariable("id-producto") long id){
         return ResponseEntity.ok().body(servicioProducto.buscarProductoPorId(id));
     }
 
@@ -44,7 +45,6 @@ public class ControladorProducto {
     public ResponseEntity<String> actualizarProducto(@RequestBody Producto producto){
         return ResponseEntity.ok().body(servicioProducto.actualizarProducto(producto));
     }
-
     @DeleteMapping("/{id-eliminar}")
     public ResponseEntity<String> eliminarProducto(@PathVariable("id-eliminar") long id){
         return ResponseEntity.ok().body(servicioProducto.eliminarProducto(id));

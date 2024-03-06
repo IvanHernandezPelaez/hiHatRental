@@ -1,9 +1,12 @@
 package com.proyecto.hihatrental.servicio;
 
+import com.proyecto.hihatrental.dto.RespuestaProductoDTO;
 import com.proyecto.hihatrental.entidad.Imagen;
 import com.proyecto.hihatrental.entidad.Producto;
 import com.proyecto.hihatrental.repositorio.RepositorioProducto;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,7 +21,10 @@ public class ServicioProducto {
         this.repositorioProducto = repositorioProducto;
     }
 
-    public Producto registrarProducto(Producto producto){
+    public RespuestaProductoDTO registrarProducto(Producto producto){
+
+        List<String> listImagenes = new ArrayList<>();
+
         boolean nombreExiste = repositorioProducto.existsByNombre(producto.getNombre());
         if (nombreExiste){
             throw new IllegalArgumentException("Nombre de producto ya existe en la BD");
@@ -30,29 +36,43 @@ public class ServicioProducto {
             urlImagen.setProducto(producto);
         }
 
-        return repositorioProducto.save(producto);
+        Producto productoRegistrado = repositorioProducto.save(producto);
 
-        /**
-         * revisar si responde con un DTO JSON**/
+        for (Imagen urlImagen: productoRegistrado.getImagenes()) {
+            listImagenes.add(urlImagen.getUrl());
+        }
+
+        return new RespuestaProductoDTO(productoRegistrado.getNombre(), productoRegistrado.getDescripcion(), listImagenes);
     }
 
-    public List<Producto> buscarProductos(){
+    public List<RespuestaProductoDTO> buscarProductos(){
+
         List<Producto> listProductos = repositorioProducto.findAll();
+        List<RespuestaProductoDTO> respuestaProductoDTOList = new ArrayList<>();
+
         if (!listProductos.isEmpty()){
-            /**revisar si responde con un DTO JSON**/
-            return listProductos;
+            for (Producto producto: listProductos) {
+                List<String> listaUrls = new ArrayList<>();
+                for (Imagen urlImagen: producto.getImagenes()) {
+                    listaUrls.add(urlImagen.getUrl());
+                }
+                respuestaProductoDTOList.add(new RespuestaProductoDTO(producto.getNombre(), producto.getDescripcion(), listaUrls));
+            }
+            return respuestaProductoDTOList;
         }
         else {
             throw new IllegalStateException("No existen productos registrados en el sistema");
         }
-
     }
 
-    public Producto buscarProductoPorId(long id){
+    public RespuestaProductoDTO buscarProductoPorId(long id){
         Optional<Producto> producto = repositorioProducto.findById(id);
+        List<String> listImagenes = new ArrayList<>();
         if (producto.isPresent()){
-            return producto.get();
-            /**revisar si responde con un DTO JSON**/
+            for (Imagen urlImagen: producto.get().getImagenes()) {
+                listImagenes.add(urlImagen.getUrl());
+            }
+            return new RespuestaProductoDTO(producto.get().getNombre(), producto.get().getDescripcion(), listImagenes);
         }
         else {
             throw new IllegalStateException("El producto no existe en el sistema");
@@ -61,14 +81,14 @@ public class ServicioProducto {
     }
 
     public String actualizarProducto(Producto producto){
-        Producto productoActualizar = buscarProductoPorId(producto.getId());
+        RespuestaProductoDTO productoActualizar = buscarProductoPorId(producto.getId());
         repositorioProducto.save(producto);
         return String.format("Producto %s actualizado correctamente", productoActualizar.getNombre());
 
     }
 
     public String eliminarProducto(long id){
-        Producto productoEliminar = buscarProductoPorId(id);
+        RespuestaProductoDTO productoEliminar = buscarProductoPorId(id);
         repositorioProducto.deleteById(id);
         return String.format("Producto %s eliminado correctamente", productoEliminar.getNombre());
 
