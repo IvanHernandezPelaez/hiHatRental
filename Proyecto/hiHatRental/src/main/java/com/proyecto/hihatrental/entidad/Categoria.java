@@ -1,13 +1,12 @@
 package com.proyecto.hihatrental.entidad;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,34 +14,38 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
 
+import java.util.List;
+
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
 @Getter
 @Setter
 @Entity
-@Table(name = "imagenes")
-public class Imagen {
+@Table(name = "categorias")
+public class Categoria {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @NonNull
     @Column(nullable = false)
-    private String url;
+    private String nombre;
 
-    @NonNull
-    @ManyToOne
-    @JoinColumn(name = "producto_id", referencedColumnName = "id")
-    @JsonIgnore
-    private Producto producto;
+    @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL)
+    private List<Producto> productos;
+
+    public Categoria(long id, @NonNull String nombre) {
+        this.id = id;
+        this.nombre = nombre;
+    }
 
     @Override
     public String toString() {
-        return "Imagen{" +
+        return "Categoria{" +
                 "id=" + id +
-                ", url='" + url + '\'' +
-                //", producto=" + producto +
+                ", nombre='" + nombre + '\'' +
+                ", productos=" + productos +
                 '}';
     }
-
 }

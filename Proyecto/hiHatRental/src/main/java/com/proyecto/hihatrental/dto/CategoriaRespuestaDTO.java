@@ -5,15 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
-public class RespuestaProductoDTO {
+public class CategoriaRespuestaDTO {
+    private long id;
     private String nombre;
-    private String descripcion;
-    private List<String> imagenes;
-
 }
