@@ -1,11 +1,14 @@
 package com.proyecto.hihatrental.repositorio;
 
-import com.proyecto.hihatrental.entidad.Producto;
+import com.proyecto.hihatrental.entidad.Categoria;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
-public interface RepositorioProducto extends JpaRepository<Producto, Long> {
+public interface RespositorioCategoria extends JpaRepository<Categoria, Long> {
     boolean existsByNombre(String nombre);
+    Optional<Categoria> findByNombre(String nombre);
 
 }
