@@ -86,14 +86,15 @@ public class ServicioProducto {
                 }
                 respuestaProductoDTOLista.add(new ProductoRespuestaDTO(producto.getId(), producto.getNombre(), producto.getDescripcion(), producto.getCategoria().getNombre(), listaUrls));
             }
+
             return respuestaProductoDTOLista;
+
         } else {
             throw new IllegalStateException("No existen productos registrados en el sistema");
         }
     }
 
     public ProductoRespuestaDTO buscarProductoPorId(long id) {
-
         Optional<Producto> producto = repositorioProducto.findById(id);
         List<String> listImagenes = new ArrayList<>();
         if (producto.isPresent()) {
@@ -120,7 +121,7 @@ public class ServicioProducto {
                 throw new IllegalArgumentException("No se pueden agregar más de 5 imagenes por producto.");
             }
 
-            List<Imagen> listaImagenesRegistradas = repositorioImagen.findByProductoId(id);
+            List<Imagen> listaImagenesRegistradas = repositorioImagen.findImagensByProductoId(id);
 
             if (listaImagenesEditar.size() > listaImagenesRegistradas.size()) {
                 siListaImagenesEditarEsMayorQueListaImagenesRegistradas(id, producto, categoria, listaImagenesEditar, listaImagenesRegistradas);
